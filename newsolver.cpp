@@ -5,7 +5,7 @@ int solver( float *, float *);
 int main(void)
  {
     printf("enter the coefficients of the quadratic equation");
-    float x, y = 0;
+    float x = 0, y = 0;
     float *px = &x;
     float *py = &y;
     int n_roots = solver(px, py);
@@ -21,18 +21,26 @@ int main(void)
     {
     printf("solutions to the equation:%f, %f", x,y);
     }
-    else
+    else if (n_roots == 1)
     {
         printf("solutions to the equation:%f", x);
-    return 0;
     }
+    else if (n_roots == 4)
+    {
+        printf("you are deep. Don't write words instead of numbers");
+    }
+    return 0;
 }
 int solver(float *px,float *py)
 {
-    float a, b, c, d;
+    float a = 0, b = 0, c = 0, d = 0;
     scanf("%f", &a);
     scanf("%f", &b);
     scanf("%f", &c);
+    if (a == NULL || b == NULL || c == NULL)
+    {
+        return 4;
+    }
     /*printf("%f, %f, %f\n", a, b, c);*/
     d = b*b - 4.0f*(a*c);
     /*printf("%f\n", d);*/
