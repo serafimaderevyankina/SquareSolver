@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <math.h>
-float a, b, c;
 int quadsolver( float, float, float, float *, float *);
-int linesolver(float, float, float, float *, float *);
-int vvod(float *, float *, float *);
-int vyvod(int, int, int, float , float );
+int linesolver(float, float, float *, float *);
+int input(float *, float *, float *);
+int output(int, float , float );
+int SolveEquation(float a, float b, float c, float* px, float* py);
+int testsolve(void);
+
+
 int main(void)
  {
     printf("enter the coefficients of the quadratic equation\n");
@@ -15,12 +18,26 @@ int main(void)
     float *pc = &c;
     float *px = &x;
     float *py = &y;
-    int ar = vvod(&a, pb, pc);
-    int n_roots = quadsolver(a, b, c, px, py);
-    int al = linesolver(a, b,  c, px, py);
-    vyvod(ar, n_roots, al, x, y);
+    int vv = input(pa, pb, pc);
+    int n_roots = SolveEquation(a, b, c, &x, &y);
+    testsolve();
+    output(n_roots, x, y);
     return 0;
 }
+
+
+int SolveEquation(float a, float b, float c, float* px, float* py) {
+        int n = 0;
+        if (a == 0) {
+            n = linesolver(b, c, px, py);
+        }
+        else {
+            n = quadsolver(a, b, c, px, py);
+        }
+    return n;
+}
+
+
 int quadsolver(float a, float b, float c, float *px,float *py)
 {
     float d = 0;
@@ -48,83 +65,122 @@ int quadsolver(float a, float b, float c, float *px,float *py)
         return 3;
     }
 }
-int linesolver(float a, float b, float c, float *px, float *py)
+
+
+
+int linesolver(float b, float c, float *px, float *py)
 {
-    if (a == 0)
+    if (b == 0)
     {
-        if (b == 0)
+        if (c == 0)
         {
-            if (c == 0)
-            {
-                return 3;
-            }
-            else
-            {
-                return 0;
-            }
+            return 3;
         }
         else
         {
-            *px = -c/b;
-            return 1;
+            return 0;
         }
     }
     else
     {
-        return 4;
-     }
+        *px = -c/b;
+        return 1;
+    }
 }
-int vvod(float *pa, float *pb, float *pc)
+
+
+int input(float *pa, float *pb, float *pc)
 {
     float a = 0, b = 0, c = 0;
     int sca = 0, scb = 0, scc = 0;
     sca = scanf("%f", &a);
     scb = scanf("%f", &b);
     scc = scanf("%f", &c);
+    /*printf("%f, %f, %f", a, b, c);*/
+    while (sca==0 || scb == 0 || scc == 0)
+    {
+        while ( getchar() != '\n' );
+        printf("Invalid input");
+        sca = scanf("%f", &a);
+        scb = scanf("%f", &b);
+        scc = scanf("%f", &c);
+    }
     *pa = a;
     *pb = b;
     *pc = c;
-    /*printf("%f, %f, %f", a, b, c);*/
-    if ((sca == 0) || (scb == 0) || (scc == 0))
+    return 0;
+}
+int output(int n_roots, float x, float y)
+{
+    if (n_roots == 3)
     {
-        return -1;
+        printf("an infinite number of roots");
     }
-    else
+    if (n_roots == 2)
     {
-        return 0;
+        printf("the roots is: %g,%g", x, y);
     }
+    if (n_roots == 1)
+    {
+        printf("the root is %g", x);
+    }
+    if (n_roots == 0)
+    {
+        printf("I've got no roots");
+    }
+    return 0;
 }
 
-int vyvod(int ar, int n_roots, int al, float x, float y)
+
+int testsolve(void)
 {
-    if (ar == 0)
+    float x1 = 0, x2  = 0;
+    int nroots = SolveEquation(1, -5, 6, &x1, &x2);
+    if (!(nroots == 2 && x1 == 2 && x2 == 3))
     {
-        if (n_roots == 3)
-        {    if (al == 3)
-            {
-                printf("infinity number of roots");
-            }
-            else if (al == 0)
-            {
-                printf("no roots");
-            }
-            else if (al == 1)
-            {
-                printf("solutions to the equation:%f", x);
-            }
-        }
-        else if (n_roots == 1)
-        {
-            printf("solutions to the equation:%f", x);
-        }
-        else if (n_roots == 2)
-        {
-          printf("solutions to the equation:%f, %f", x,y);
-        }
+        printf("1 failled: x1 = %lf, x2 = %lf (should be x1 = 2, x2 = 3)",x1, x2);
     }
-    else
+    x1 = 0;
+    x2 = 0;
+    nroots = SolveEquation(1, 2, 1, &x1, &x2);
+    if (!(nroots == 1 && x1 == -1 && x2 == 0))
     {
-       printf("write numbers instead of words");
+        printf("2 failled: x1 = %lf, x2 = %lf (should be x1 = -1, x2 = nope)",x1, x2);
+    }
+    x1 = 0;
+    x2 = 0;
+    nroots = SolveEquation(0, 2, 1, &x1, &x2);
+    if (!(nroots == 1 && x1 == -0,5 && x2 == 0))
+    {
+        printf("3 failled: x1 = %lf, x2 = %lf (should be x1 = -0,5, x2 = nope)",x1, x2);
+    }
+    x1 = 0;
+    x2 = 0;
+    nroots = SolveEquation(0, 0, 0, &x1, &x2);
+    if (!(nroots == 3 && x1 == 0 && x2 == 0))
+    {
+        printf("4 failled: x1 = %lf, x2 = %lf (should be x1 = nope, x2 = nope)",x1, x2);
+    }
+    x1 = 0;
+    x2 = 0;
+    nroots = SolveEquation(2, 5, 3, &x1, &x2);
+    if (!(nroots == 2 && x1 == -1,5 && x2 == -1))
+    {
+        printf("failled: x1 = %lf, x2 = %lf (should be x1 = -1,5, x2 = -1)",x1, x2);
+    }
+    x1 = 0;
+    x2 = 0;
+    nroots = SolveEquation(0, 0, 3, &x1, &x2);
+    if (!(nroots == 0 && x1 == 0 && x2 == 0))
+    {
+        printf("5 failled: x1 = %lf, x2 = %lf (should be x1 = nope, x2 = nope)",x1, x2);
+    }
+    x1 = 0;
+    x2 = 0;
+    nroots = SolveEquation(5, 1, 1, &x1, &x2);
+    if (!(nroots == 0 && x1 == 0 && x2 == 0))
+    {
+        printf("6 failled: x1 = %lf, x2 = %lf (should be x1 = nope, x2 = nope)",x1, x2);
     }
     return 0;
 }
