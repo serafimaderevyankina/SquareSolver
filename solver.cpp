@@ -349,42 +349,25 @@ int distributionflags( consoleflags cons, float *pa, float *pb, float *pc)
     assert(pa != NULL);
     assert(pb != NULL);
     assert(pc != NULL);
-    if (cons.test == true && cons.file == true)
+    if (cons.test == true)
+    {
+        int if_tests_passed = runtest();
+        if (if_tests_passed  != 0)
         {
-            int if_tests_passed = runtest();
-            if (if_tests_passed  != 0)
-            {
-                RED(printf("tests failed"));
+            RED(printf("tests failed"));
 
-                return 0;
-            }
-            else if (if_tests_passed  == 0)
-            {
-                RED(printf("tests passed\n"));
-            }
-            FILE *file = fopen(cons.name, "r");
-            file_input(file, pa, pb, pc);
-
+            return 0;
         }
-    else if (cons.file == true && cons.test != true)
+        else if (if_tests_passed  == 0)
         {
-            FILE *file = fopen(cons.name, "r");
-            file_input(file, pa, pb, pc);
+            RED(printf("tests passed\n"));
         }
-    else if (cons.file != true && cons.test == true)
-        {
-            int if_tests_passed = runtest();
-            if (if_tests_passed  != 0)
-            {
-                RED(printf("tests failed"));
-            }
-            else if (if_tests_passed  == 0)
-            {
-                RED(printf("tests passed\n"));
-                printf("enter the coefficients of the quadratic equation\n");
-                input(pa, pb, pc);
-            }
-        }
+    }
+    if (cons.file == true)
+    {
+        FILE *file = fopen(cons.name, "r");
+        file_input(file, pa, pb, pc);
+    }
     else
     {
         printf("enter the coefficients of the quadratic equation\n");
